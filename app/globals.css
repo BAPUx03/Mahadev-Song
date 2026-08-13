@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-accent: #fbbf24;
+  --color-accent-dark: #d97706;
+  --color-surface: #0f172a;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+body {
+  background-color: var(--color-surface);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+.hero-bg {
+  background-image: url('/bg/scene-wide.png');
+}
+
+@media (orientation: portrait) {
+  .hero-bg {
+    background-image: url('/bg/scene-tall.png');
+  }
+}
+
+.grain-overlay {
+  mix-blend-mode: overlay;
+  opacity: 0.3;
+  pointer-events: none;
+}
