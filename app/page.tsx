@@ -16,6 +16,10 @@ interface Track {
   videoId: string;
 }
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+}
+
 const OPENING: Track[] = [
   { id: '01', title: 'Karpur Gauram Karunavtaram', artist: 'Rahul Vaidya', film: 'Single', year: 2023, duration: 95, videoId: 'dVFKM0biLiY' },
   { id: '02', title: 'Om Namah Shivaya', artist: 'Anuradha Paudwal', film: 'Shiv Mahima', year: 1996, duration: 2849, videoId: '3FcBh45t9Vs' },
@@ -151,14 +155,36 @@ function ListenerCount() {
 
 function SocialLinks() {
   const links = [
-    { label: 'YouTube', href: '#' },
-    { label: 'Instagram', href: '#' },
+    { label: 'YouTube', href: 'https://www.youtube.com/', icon: '▶' },
+    { label: 'Instagram', href: 'https://www.instagram.com/', icon: '◎' },
+    { label: 'Spotify', href: 'https://open.spotify.com/', icon: '◉' },
   ];
   return (
-    <div className="flex gap-4 text-[11px] uppercase tracking-widest text-white/50">
+    <div className="flex items-center gap-2 sm:gap-4">
       {links.map((l) => (
-        <a key={l.label} href={l.href} className="transition-colors hover:text-white/90">
-          {l.label}
+        <a key={l.label} href={l.href} target="_blank" rel="noreferrer" aria-label={`Open ${l.label}`} className="social-link group flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-white/55 transition-colors hover:text-accent sm:text-[11px]">
+          <span className="text-xs text-accent/80 transition-transform group-hover:scale-125">{l.icon}</span>
+          <span className="hidden sm:inline">{l.label}</span>
+        </a>
+      ))}
+    </div>
+  );
+}
+
+void SocialLinks;
+
+function CreatorSocialLinks() {
+  const links = [
+    { label: 'Instagram', href: 'https://www.instagram.com/pruthvirajsinh__makwana/', icon: 'IG' },
+    { label: 'Portfolio', href: 'https://pruthvirajsinh.in/', icon: 'WEB' },
+    { label: 'Email', href: 'mailto:pruthvirajsinh.biz@gmail.com', icon: '@' },
+  ];
+  return (
+    <div className="flex items-center gap-2 sm:gap-4">
+      {links.map((link) => (
+        <a key={link.label} href={link.href} target={link.href.startsWith('mailto:') ? undefined : '_blank'} rel={link.href.startsWith('mailto:') ? undefined : 'noreferrer'} aria-label={`Open ${link.label}`} className="social-link group flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-white/55 transition-colors hover:text-accent sm:text-[11px]">
+          <span className="text-[9px] font-semibold text-accent/80 transition-transform group-hover:scale-110">{link.icon}</span>
+          <span className="hidden sm:inline">{link.label}</span>
         </a>
       ))}
     </div>
@@ -533,9 +559,116 @@ const INSET = {
   right: 'max(1rem, env(safe-area-inset-right))',
 };
 
+function CreatorPrompt() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    let first = true;
+    const schedule = () => {
+      timer = setTimeout(() => {
+        setOpen(true);
+        first = false;
+        schedule();
+      }, first ? 60_000 : 15 * 60_000);
+    };
+    schedule();
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!open) return null;
+
+  return (
+    <div className="creator-prompt fixed inset-x-4 bottom-4 z-30 sm:inset-x-auto sm:right-6 sm:w-[390px]" role="dialog" aria-modal="false" aria-labelledby="creator-prompt-title">
+      <div className={`${GLASS} rounded-[24px] p-5`}>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="mb-2 text-[10px] uppercase tracking-[0.28em] text-accent">Built with intention</div>
+            <h2 id="creator-prompt-title" className="font-serif text-2xl text-white">Need a website for your business?</h2>
+          </div>
+          <button type="button" onClick={() => setOpen(false)} aria-label="Close creator message" className="rounded-full px-2 py-1 text-xl leading-none text-white/45 transition-colors hover:bg-white/10 hover:text-white">×</button>
+        </div>
+        <p className="mt-3 text-sm leading-6 text-white/65">This listening room was crafted by Pruthvirajsinh Makwana. I build thoughtful websites and digital experiences for businesses.</p>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <a className="rounded-full bg-accent px-4 py-2 text-xs font-semibold text-black transition-transform hover:scale-[1.03]" href="https://pruthvirajsinh.in/" target="_blank" rel="noreferrer">View portfolio</a>
+          <a className="text-xs text-white/60 underline decoration-white/25 underline-offset-4 transition-colors hover:text-accent" href="mailto:pruthvirajsinh.biz@gmail.com">Let&apos;s work together</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SiteFooter() {
+  return (
+    <footer className="site-footer relative z-10 w-full border-t border-white/10 bg-black/20 px-5 py-8 text-center backdrop-blur-md">
+      <div className="mx-auto flex max-w-3xl flex-col items-center gap-3 text-xs text-white/50 sm:flex-row sm:justify-between sm:text-left">
+        <p>© {new Date().getFullYear()} Mahadev Listening Room · For educational and devotional purposes.</p>
+        <div className="flex items-center gap-4">
+          <a href="/privacy" className="transition-colors hover:text-white">Privacy policy</a>
+          <a href="mailto:pruthvirajsinh.biz@gmail.com" className="transition-colors hover:text-accent">Contact</a>
+        </div>
+      </div>
+      <p className="mt-4 text-[11px] text-white/40">Designed &amp; developed by <a className="text-accent/85 underline decoration-accent/30 underline-offset-4 transition-colors hover:text-accent" href="https://pruthvirajsinh.in/" target="_blank" rel="noreferrer">Pruthvirajsinh Makwana</a></p>
+    </footer>
+  );
+}
+
+function InstallAppButton() {
+  const [promptEvent, setPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
+
+  useEffect(() => {
+    const onInstall = (event: Event) => {
+      event.preventDefault();
+      setPromptEvent(event as BeforeInstallPromptEvent);
+    };
+    window.addEventListener('beforeinstallprompt', onInstall);
+    return () => window.removeEventListener('beforeinstallprompt', onInstall);
+  }, []);
+
+  if (!promptEvent) return null;
+
+  return (
+    <button type="button" onClick={async () => { await promptEvent.prompt(); setPromptEvent(null); }} className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs text-white/80 transition-colors hover:border-accent/50 hover:text-accent">
+      Install listening room
+    </button>
+  );
+}
+
+function ServicesSection() {
+  const services = [
+    ['01', 'Business websites', 'Fast, polished websites that make your brand look credible from the first visit.'],
+    ['02', 'Portfolio experiences', 'Distinctive personal websites that turn your work into a clear story.'],
+    ['03', 'Landing pages', 'Focused pages for launches, services, campaigns, and growing businesses.'],
+  ];
+
+  return (
+    <section className="services-section relative z-10 w-full max-w-5xl px-5 py-20 sm:px-8 sm:py-28">
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="text-[10px] uppercase tracking-[0.35em] text-accent">Have a vision?</p>
+        <h2 className="mt-4 font-serif text-4xl leading-tight text-white sm:text-5xl">Need a website for your business?</h2>
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/60 sm:text-base">I create clean, memorable digital experiences that help businesses and creators look their best online.</p>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <a href="mailto:pruthvirajsinh.biz@gmail.com?subject=Website%20project%20inquiry" className="rounded-full bg-accent px-5 py-3 text-xs font-semibold text-black transition-transform hover:scale-[1.03]">Start a project</a>
+          <a href="https://pruthvirajsinh.in/" target="_blank" rel="noreferrer" className="rounded-full border border-white/15 bg-white/5 px-5 py-3 text-xs text-white/80 transition-colors hover:border-accent/50 hover:text-accent">Explore my portfolio</a>
+          <InstallAppButton />
+        </div>
+      </div>
+      <div className="mx-auto mt-12 grid max-w-4xl gap-3 md:grid-cols-3">
+        {services.map(([number, title, description]) => (
+          <div key={number} className="service-card rounded-[24px] border border-white/10 bg-white/[0.055] p-6 backdrop-blur-xl transition-transform duration-500 hover:-translate-y-2 hover:border-accent/30">
+            <div className="text-xs font-mono text-accent/80">{number}</div>
+            <h3 className="mt-8 text-lg font-semibold text-white">{title}</h3>
+            <p className="mt-3 text-sm leading-6 text-white/55">{description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   return (
-    <main className="relative flex min-h-dvh flex-1 flex-col items-center justify-between overflow-hidden">
+    <main className="relative flex min-h-dvh flex-1 flex-col items-center justify-between overflow-x-hidden">
       <div className="fixed inset-0 -z-20">
         <div className="hero-bg absolute inset-0 bg-cover bg-center" />
         <VideoBackground />
@@ -543,22 +676,48 @@ export default function Home() {
       </div>
 
       <div className="grain-overlay fixed inset-0 -z-10" style={{ backgroundImage: GRAIN }} />
+      <div className="motion-orb motion-orb-one" aria-hidden="true" />
+      <div className="motion-orb motion-orb-two" aria-hidden="true" />
 
       <div
         className="flex w-full items-start justify-between"
         style={{ paddingTop: INSET.top, paddingLeft: INSET.left, paddingRight: INSET.right }}
       >
-        <Clock />
+        <div className="flex items-center gap-3">
+          <div className="brand-mark flex h-8 w-8 items-center justify-center rounded-full border border-accent/40 bg-black/25 text-sm text-accent shadow-[0_0_24px_rgba(251,191,36,0.18)]">ॐ</div>
+          <div className="hidden leading-none sm:block">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/90">Mahadev</div>
+            <div className="mt-1 text-[9px] uppercase tracking-[0.18em] text-white/40">The listening room</div>
+          </div>
+          <Clock />
+        </div>
         <ListenerCount />
-        <SocialLinks />
+        <CreatorSocialLinks />
       </div>
 
+      <section className="hero-copy flex w-full max-w-xl flex-1 flex-col items-center justify-center px-5 pb-10 pt-16 text-center sm:pb-16">
+        <div className="eyebrow mb-5 flex items-center gap-3 text-[10px] uppercase tracking-[0.42em] text-accent/80">
+          <span className="h-px w-8 bg-accent/50" />
+          Har Har Mahadev
+          <span className="h-px w-8 bg-accent/50" />
+        </div>
+        <h1 className="max-w-lg font-serif text-4xl leading-[0.95] tracking-[-0.04em] text-white drop-shadow-2xl sm:text-6xl">
+          Find your stillness in the sound of Shiva.
+        </h1>
+        <p className="mt-5 max-w-md text-sm leading-6 text-white/65 sm:text-base">
+          A handpicked devotional listening room for quiet mornings, deep focus, and every moment in between.
+        </p>
+      </section>
+
       <div
-        className="w-full max-w-xl"
+        className="player-shell w-full max-w-xl"
         style={{ paddingBottom: INSET.bottom, paddingLeft: INSET.left, paddingRight: INSET.right }}
       >
         <Player />
       </div>
+      <ServicesSection />
+      <SiteFooter />
+      <CreatorPrompt />
     </main>
   );
 }
