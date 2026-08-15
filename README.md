@@ -2,6 +2,12 @@
 
 Single-page devotional listening room. Next.js App Router, Tailwind v4, YouTube IFrame API.
 
+## Live website
+
+[Open Mahadev Listening Room](https://mahadev-song-m7nsee3y4-pruthviraj3.vercel.app/)
+
+Admin dashboard: `/admin`. Before using it, configure the server environment variables listed in [.env.example](.env.example).
+
 ```bash
 npm install
 npm run dev
