@@ -4,8 +4,27 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Mahadev',
-  description: 'A devotional listening room.',
+  title: {
+    default: 'Mahadev Listening Room',
+    template: '%s | Mahadev Listening Room',
+  },
+  description: 'A calm devotional listening room for Shiva bhajans, mantras, and songs shared through YouTube embeds.',
+  keywords: ['Mahadev', 'Shiva songs', 'devotional music', 'bhajan', 'mantra', 'listening room'],
+  authors: [{ name: 'Pruthvirajsinh Makwana', url: 'https://pruthvirajsinh.in/' }],
+  creator: 'Pruthvirajsinh Makwana',
+  publisher: 'Pruthvirajsinh Makwana',
+  robots: { index: true, follow: true },
+  openGraph: {
+    title: 'Mahadev Listening Room',
+    description: 'Find your stillness in the sound of Shiva.',
+    type: 'website',
+    siteName: 'Mahadev Listening Room',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Mahadev Listening Room',
+    description: 'A calm devotional listening room for Shiva music.',
+  },
 };
 
 export const viewport: Viewport = {
